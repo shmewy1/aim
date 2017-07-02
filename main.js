@@ -1,13 +1,18 @@
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
+
 var width = 800;
 var height = 600;
-mousePos = {x: 0, y: 0};
-mouse1 = false;
+
+var mousePos = {x: 0, y: 0};
+var mouse1 = false;
+var score = 0;
+var startTime = Math.round((new Date()).getTime() / 1000);
+var timeleft = 30;
 
 
 target = {
-    radius: 20,
+    radius: 30,
     x: width/2,
     y: height/2,
     color: 'red',
@@ -20,8 +25,6 @@ target = {
     update: function() {
         x = mousePos.x - this.x;
         y = mousePos.y - this.y;
-
-        console.log(x + ' ' + y);
 
         if (x**2 + y**2 <= this.radius**2) {
             this.color = 'green';
@@ -36,6 +39,8 @@ target = {
     hit: function() {
         this.x = Math.floor((Math.random() * 700) + this.radius)
         this.y = Math.floor((Math.random() * 500) + this.radius)
+
+        score += 1; 
     }
 }
 
@@ -44,6 +49,9 @@ function update() {
     draw();
 
     mouse1 = false;
+
+    timeleft = startTime - (Math.round((new Date()).getTime() / 1000)) + 30;
+    
 }
 
 function draw() {
@@ -53,10 +61,14 @@ function draw() {
     target.draw();
 
     ctx.fillStyle = "white";
-    ctx.font = "30px Arial";
+    ctx.font = "20px Arial";
+
+    ctx.fillText("score: " + score, 10, 30);
+    ctx.fillText("time: " + timeleft, 600, 30);
 
     ctx.fillText("x: " + mousePos.x, 10, 50);
-    ctx.fillText("y: " + mousePos.y, 10, 90)
+    ctx.fillText("y: " + mousePos.y, 10, 70);
+
 }
 
 function getMousePos(canvas, evt) {
@@ -76,5 +88,5 @@ window.addEventListener('mousedown', function(evt) {
 })
 
 setInterval(function() {
-    update()
+    if (timeleft >= 0) update();
 }, 1000/60);
