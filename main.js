@@ -1,4 +1,4 @@
-var canvas, ctx, width, height;
+var canvas, ctx, width, height, mainmenu;
 
 function setupCanvas() {
     canvas = document.getElementById("canvas");
@@ -6,6 +6,8 @@ function setupCanvas() {
 
     width = 800;
     height = 600;
+
+    mainmenu = true;
 }
 
 function setupGame() {
@@ -87,18 +89,49 @@ function gameoverscreen() {
     showMouseCords();
 }
 
-function update() {
-    mouse1 = false;
-    
-    if (timeleft >= 0) {
-        // gameplay
-        target.update();
-        render();
+function mainmenuscreen() {
+    ctx.fillStyle = "#212121"
+    ctx.fillRect(0, 0, width, height);
 
-        timeleft = startTime - (Math.round((new Date()).getTime() / 1000)) + 30;
+    ctx.textAlign = 'center';
+    ctx.fillStyle = "white";
+
+    ctx.font = "40px Arial";
+    ctx.fillText("You too can become like Jonno Reed!", width/2, (height/2)-60);
+    if (mousePos.x > (width/2) - 100 && mousePos.x < (width/2) + 100 && mousePos.y > (height/2) + 50 && mousePos.y < (height/2) + 100) {
+        ctx.fillStyle = '#CDDC39';
+        if (mouse1)
+            mainmenu = false;
+            setupGame();
     } else {
-        gameoverscreen(); 
-    } 
+        ctx.fillStyle = '#8BC34A';
+    }
+    ctx.fillRect((width/2)-100, (height/2)+50, 200, 50);
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    ctx.fillStyle = 'white';
+    ctx.fillText("START", width/2, (height/2)+75);
+    ctx.textBaseline = 'alphabetic';
+
+}
+
+function update() {
+
+    if (mainmenu) {
+        mainmenuscreen();
+    } else {
+        
+        if (timeleft >= 0) {
+            // gameplay
+            target.update();
+            timeleft = startTime - (Math.round((new Date()).getTime() / 1000)) + 30;
+            render();
+        } else {
+            gameoverscreen(); 
+        }
+    }
+    mouse1 = false;
 }
 
 function render() {
