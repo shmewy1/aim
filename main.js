@@ -88,12 +88,12 @@ function gameoverscreen() {
 }
 
 function update() {
+    mouse1 = false;
+    
     if (timeleft >= 0) {
         // gameplay
         target.update();
         render();
-
-        mouse1 = false;
 
         timeleft = startTime - (Math.round((new Date()).getTime() / 1000)) + 30;
     } else {
