@@ -1,6 +1,6 @@
-var canvas, ctx, width, height, mainmenu;
+var canvas, ctx, width, height, mainmenu, backgroundImg, targetImg, menutextImg, startbutton_darkImg, startbutton_lightImg;
 
-function setupCanvas() {
+function setup() {
     canvas = document.getElementById("canvas");
     ctx = canvas.getContext("2d");
 
@@ -8,6 +8,30 @@ function setupCanvas() {
     height = 600;
 
     mainmenu = true;
+
+    backgroundImg = new Image();
+    backgroundImg.src = 'res/background.png';
+    
+    targetImg = new Image();
+    targetImg.src = 'res/target.png';
+
+    menutextImg = new Image();
+    menutextImg.src = 'res/menutext.png';
+
+    startbutton_darkImg = new Image();
+    startbutton_darkImg.src = 'res/startbutton_dark.png';
+
+    startbutton_lightImg = new Image();
+    startbutton_lightImg.src = 'res/startbutton_light.png';
+
+    gameovertextImg = new Image();
+    gameovertextImg.src = 'res/gameovertext.png'
+
+    retrybutton_darkImg = new Image();
+    retrybutton_darkImg.src = 'res/retrybutton_dark.png';
+
+    retrybutton_lightImg = new Image();
+    retrybutton_lightImg.src = 'res/retrybutton_light.png';
 }
 
 function setupGame() {
@@ -28,92 +52,65 @@ target = {
         this.radius = 30;
         this.x = width/2;
         this.y = height/2;
-        this.color = 'red'; 
     },
     draw: function() {
-        ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, 2*Math.PI);
-        ctx.fill();
+        ctx.drawImage(targetImg, this.x-this.radius, this.y-this.radius);
     },
     update: function() {
         x = mousePos.x - this.x;
         y = mousePos.y - this.y;
 
         if (x**2 + y**2 <= this.radius**2) {
-            this.color = 'green';
-
+            //hit
             if (mouse1) {
                 this.hit();
             }
         } else {
-            this.color = 'red';
+            //miss
         }
     },
     hit: function() {
-        this.x = Math.floor((Math.random() * 700) + this.radius)
-        this.y = Math.floor((Math.random() * 500) + this.radius)
+        this.x = Math.floor((Math.random() * 700) + this.radius);
+        this.y = Math.floor((Math.random() * 400) + 100);
 
         score += 1; 
     }
 }
 
 function gameoverscreen() {
-    ctx.fillStyle = "#212121"
-    ctx.fillRect(0, 0, width, height);
+    ctx.drawImage(backgroundImg, 0, 0);
+
+    ctx.drawImage(gameovertextImg, 300-114, 150);
 
     ctx.textAlign = 'center';
     ctx.fillStyle = "white";
-
-    ctx.font = "60px Arial";
-    ctx.fillText("TIME'S UP", (width/2), (height/2)-60);
 
     ctx.font = "40px Arial";
     ctx.fillText("score: " + score, (width/2), (height/2)+10);
 
     if (mousePos.x > (width/2) - 100 && mousePos.x < (width/2) + 100 && mousePos.y > (height/2) + 50 && mousePos.y < (height/2) + 100) {
-        ctx.fillStyle = '#CDDC39';
+        ctx.drawImage(retrybutton_lightImg, (width/2)-100, (height/2)+50);
         if (mouse1)
             setupGame();
     } else {
-        ctx.fillStyle = '#8BC34A';
+        ctx.drawImage(retrybutton_darkImg, (width/2)-100, (height/2)+50);
     }
-    ctx.fillRect((width/2)-100, (height/2)+50, 200, 50);
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-
-    ctx.fillStyle = 'white';
-    ctx.fillText("RETRY", width/2, (height/2)+75);
-    ctx.textBaseline = 'alphabetic';
-
-    showMouseCords();
 }
 
 function mainmenuscreen() {
-    ctx.fillStyle = "#212121"
-    ctx.fillRect(0, 0, width, height);
-
-    ctx.textAlign = 'center';
-    ctx.fillStyle = "white";
-
-    ctx.font = "40px Arial";
-    ctx.fillText("You too can become like Jonno Reed!", width/2, (height/2)-60);
-    if (mousePos.x > (width/2) - 100 && mousePos.x < (width/2) + 100 && mousePos.y > (height/2) + 50 && mousePos.y < (height/2) + 100) {
-        ctx.fillStyle = '#CDDC39';
-        if (mouse1)
+    ctx.drawImage(backgroundImg, 0, 0);
+    ctx.drawImage(menutextImg, 300-107, 150);
+    
+    if (mousePos.x > (width/2) - 100 && mousePos.x < (width/2) + 100 && mousePos.y > (height/2) + 50 && mousePos.y < (height/2) + 100) { 
+        ctx.drawImage(startbutton_lightImg, (width/2)-100, (height/2)+50);
+        console.log
+        if (mouse1) {
             mainmenu = false;
             setupGame();
+        }
     } else {
-        ctx.fillStyle = '#8BC34A';
+        ctx.drawImage(startbutton_darkImg, (width/2)-100, (height/2)+50);
     }
-    ctx.fillRect((width/2)-100, (height/2)+50, 200, 50);
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-
-    ctx.fillStyle = 'white';
-    ctx.fillText("START", width/2, (height/2)+75);
-    ctx.textBaseline = 'alphabetic';
-
 }
 
 function update() {
@@ -121,7 +118,6 @@ function update() {
     if (mainmenu) {
         mainmenuscreen();
     } else {
-        
         if (timeleft >= 0) {
             // gameplay
             target.update();
@@ -135,18 +131,15 @@ function update() {
 }
 
 function render() {
-    ctx.fillStyle = "#212121"
-    ctx.fillRect(0, 0, width, height);
+    ctx.drawImage(backgroundImg, 0, 0);
 
     target.draw();
 
-    ctx.fillStyle = "white";
+    ctx.fillStyle = "black";
     ctx.font = "20px Arial";
 
     ctx.fillText("score: " + score, 10, 30);
     ctx.fillText("time: " + timeleft, 600, 30);
-
-    showMouseCords();
 }
 
 function showMouseCords() {
@@ -174,7 +167,7 @@ window.addEventListener('mousedown', function(evt) {
     mouse1 = true;
 })
 
-setupCanvas();
+setup();
 setupGame();
 
 setInterval(function() {
