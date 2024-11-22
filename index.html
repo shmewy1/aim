@@ -1,7 +1,27 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>You too can be like jonno Reed!</title>
+    <script>
+        // Hide the body by default to prevent content from loading until the prompt is validated
+        document.documentElement.style.display = 'none';
+
+        // Function to prompt until correct value is entered
+        (function() {
+            let x = null;
+            while (x !== "polytrack") {
+                x = prompt("Testing, testing, 1, 2, 3...");
+                if (x === null) {
+                    // If user cancels, stop the script and do not load the page
+                    alert("You have canceled the prompt. The page will not load.");
+                    throw new Error("User canceled the prompt."); // Stop further execution
+                }
+            }
+            // If correct input is entered, reveal the page content
+            document.documentElement.style.display = '';
+            alert("Correct! Now loading the page...");
+        })();
+    </script>
+    <title>notitle</title>
     <link rel="stylesheet" href="style.css"/>
   </head>
   <body>
